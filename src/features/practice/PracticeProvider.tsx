@@ -18,6 +18,7 @@ export function PracticeProvider({ children }: { children: ReactNode }) {
       updateStatus: (id: string, status: Status) =>
         dispatch({ type: 'updateStatus', id, status, updatedAt: new Date().toISOString() }),
       deleteQuestion: (id: string) => dispatch({ type: 'delete', id }),
+      loadSamples: () => dispatch({ type: 'loadSamples', questions: createSampleQuestions() }),
     }),
     [],
   )

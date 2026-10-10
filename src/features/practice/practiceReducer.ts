@@ -8,6 +8,7 @@ export type PracticeAction =
   | { type: 'add'; question: Question }
   | { type: 'updateStatus'; id: string; status: Status; updatedAt: string }
   | { type: 'delete'; id: string }
+  | { type: 'loadSamples'; questions: Question[] }
 
 /**
  * Pure reducer: no ids, dates or storage in here. Anything non-deterministic
@@ -32,5 +33,9 @@ export function practiceReducer(state: PracticeState, action: PracticeAction): P
 
     case 'delete':
       return { ...state, questions: state.questions.filter((q) => q.id !== action.id) }
+
+    case 'loadSamples':
+      // Only ever fills an empty tracker; it must never overwrite real data.
+      return state.questions.length === 0 ? { ...state, questions: action.questions } : state
   }
 }

@@ -6,6 +6,8 @@ export interface PracticeContextValue {
   addQuestion: (input: NewQuestionInput) => void
   updateStatus: (id: string, status: Status) => void
   deleteQuestion: (id: string) => void
+  /** Fill an empty tracker with demo questions. */
+  loadSamples: () => void
 }
 
 export const PracticeContext = createContext<PracticeContextValue | null>(null)

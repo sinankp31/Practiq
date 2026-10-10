@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import { EmptyTracker } from '@/components/questions/EmptyTracker'
+import { NoResults } from '@/components/questions/NoResults'
 import { AddQuestionButton } from '@/components/questions/AddQuestionButton'
 import { QuestionList } from '@/components/questions/QuestionList'
 import { QuestionToolbar } from '@/components/questions/QuestionToolbar'
@@ -13,21 +15,29 @@ export default function QuestionsPage() {
   const [filters, setFilters] = useState<QuestionFilters>(DEFAULT_FILTERS)
   const visible = useMemo(() => filterQuestions(questions, filters), [questions, filters])
 
+  const resetFilters = () => setFilters(DEFAULT_FILTERS)
+
   return (
     <>
       <PageHeader
         title="Questions"
         description="Track, filter and practice your interview questions."
-        action={<AddQuestionButton />}
+        action={questions.length > 0 ? <AddQuestionButton /> : undefined}
       />
-      <QuestionToolbar
-        filters={filters}
-        onChange={setFilters}
-        onReset={() => setFilters(DEFAULT_FILTERS)}
-        resultCount={visible.length}
-        totalCount={questions.length}
-      />
-      <QuestionList questions={visible} />
+      {questions.length === 0 ? (
+        <EmptyTracker />
+      ) : (
+        <>
+          <QuestionToolbar
+            filters={filters}
+            onChange={setFilters}
+            onReset={resetFilters}
+            resultCount={visible.length}
+            totalCount={questions.length}
+          />
+          {visible.length === 0 ? <NoResults onReset={resetFilters} /> : <QuestionList questions={visible} />}
+        </>
+      )}
     </>
   )
 }
