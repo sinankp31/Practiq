@@ -2,12 +2,12 @@ import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from
 import { createSampleQuestions } from '@/constants/sampleQuestions'
 import { createQuestion } from '@/features/questions/createQuestion'
 import { repository as defaultRepository } from '@/services'
-import { STORAGE_VERSION, type PracticeRepository } from '@/services/repository'
-import type { NewQuestionInput, Question, Status } from '@/types/question'
+import { DEFAULT_MACHINE_CODING, STORAGE_VERSION, type PracticeRepository } from '@/services/repository'
+import type { MachineCodingStatus, NewQuestionInput, Status } from '@/types/question'
 import { PracticeContext, type PracticeContextValue } from './PracticeContext'
 import { practiceReducer, type PracticeState } from './practiceReducer'
 
-const INITIAL_STATE: PracticeState = { questions: [], loadState: 'loading' }
+const INITIAL_STATE: PracticeState = { questions: [], machineCoding: DEFAULT_MACHINE_CODING, loadState: 'loading' }
 
 interface PracticeProviderProps {
   children: ReactNode
@@ -18,16 +18,16 @@ interface PracticeProviderProps {
 export function PracticeProvider({ children, repository = defaultRepository }: PracticeProviderProps) {
   const [state, dispatch] = useReducer(practiceReducer, INITIAL_STATE)
   const [persistenceError, setPersistenceError] = useState(false)
-  // The array we just loaded from storage: saving it straight back would be pointless.
-  const hydratedQuestions = useRef<Question[] | null>(null)
+  // Set right after loading: the state we just read from storage doesn't need writing back.
+  const skipNextSave = useRef(false)
 
   // Load once on mount.
   useEffect(() => {
     let cancelled = false
     repository.load().then((persisted) => {
       if (cancelled) return
-      hydratedQuestions.current = persisted.questions
-      dispatch({ type: 'hydrate', questions: persisted.questions })
+      skipNextSave.current = true
+      dispatch({ type: 'hydrate', questions: persisted.questions, machineCoding: persisted.machineCoding })
     })
     return () => {
       cancelled = true
@@ -36,12 +36,16 @@ export function PracticeProvider({ children, repository = defaultRepository }: P
 
   // Save whenever the data changes (but never before the first load finishes).
   useEffect(() => {
-    if (state.loadState !== 'ready' || state.questions === hydratedQuestions.current) return
+    if (state.loadState !== 'ready') return
+    if (skipNextSave.current) {
+      skipNextSave.current = false
+      return
+    }
     repository
-      .save({ version: STORAGE_VERSION, questions: state.questions })
+      .save({ version: STORAGE_VERSION, questions: state.questions, machineCoding: state.machineCoding })
       .then(() => setPersistenceError(false))
       .catch(() => setPersistenceError(true))
-  }, [state.loadState, state.questions, repository])
+  }, [state.loadState, state.questions, state.machineCoding, repository])
 
   // dispatch is stable, so these callbacks keep one identity for the app's lifetime.
   const actions = useMemo(
@@ -51,13 +55,20 @@ export function PracticeProvider({ children, repository = defaultRepository }: P
         dispatch({ type: 'updateStatus', id, status, updatedAt: new Date().toISOString() }),
       deleteQuestion: (id: string) => dispatch({ type: 'delete', id }),
       loadSamples: () => dispatch({ type: 'loadSamples', questions: createSampleQuestions() }),
+      setMachineCoding: (status: MachineCodingStatus) => dispatch({ type: 'setMachineCoding', status }),
     }),
     [],
   )
 
   const value = useMemo<PracticeContextValue>(
-    () => ({ questions: state.questions, isLoading: state.loadState === 'loading', persistenceError, ...actions }),
-    [state.questions, state.loadState, persistenceError, actions],
+    () => ({
+      questions: state.questions,
+      machineCoding: state.machineCoding,
+      isLoading: state.loadState === 'loading',
+      persistenceError,
+      ...actions,
+    }),
+    [state.questions, state.machineCoding, state.loadState, persistenceError, actions],
   )
 
   return <PracticeContext.Provider value={value}>{children}</PracticeContext.Provider>

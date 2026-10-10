@@ -1,17 +1,19 @@
-import type { Question, Status } from '@/types/question'
+import type { MachineCodingStatus, Question, Status } from '@/types/question'
 
 export interface PracticeState {
   questions: Question[]
+  machineCoding: MachineCodingStatus
   /** 'loading' until the repository has answered, so the UI never flashes a false empty state. */
   loadState: 'loading' | 'ready'
 }
 
 export type PracticeAction =
-  | { type: 'hydrate'; questions: Question[] }
+  | { type: 'hydrate'; questions: Question[]; machineCoding: MachineCodingStatus }
   | { type: 'add'; question: Question }
   | { type: 'updateStatus'; id: string; status: Status; updatedAt: string }
   | { type: 'delete'; id: string }
   | { type: 'loadSamples'; questions: Question[] }
+  | { type: 'setMachineCoding'; status: MachineCodingStatus }
 
 /**
  * Pure reducer: no ids, dates or storage in here. Anything non-deterministic
@@ -20,7 +22,7 @@ export type PracticeAction =
 export function practiceReducer(state: PracticeState, action: PracticeAction): PracticeState {
   switch (action.type) {
     case 'hydrate':
-      return { questions: action.questions, loadState: 'ready' }
+      return { questions: action.questions, machineCoding: action.machineCoding, loadState: 'ready' }
 
     case 'add':
       return { ...state, questions: [action.question, ...state.questions] }
@@ -43,5 +45,8 @@ export function practiceReducer(state: PracticeState, action: PracticeAction): P
     case 'loadSamples':
       // Only ever fills an empty tracker; it must never overwrite real data.
       return state.questions.length === 0 ? { ...state, questions: action.questions } : state
+
+    case 'setMachineCoding':
+      return state.machineCoding === action.status ? state : { ...state, machineCoding: action.status }
   }
 }

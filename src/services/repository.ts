@@ -1,14 +1,21 @@
-import type { Question } from '@/types/question'
+import type { MachineCodingStatus, Question } from '@/types/question'
 
 /** Shape of everything Practiq stores. `version` drives migrations. */
 export interface PersistedState {
   version: 1
   questions: Question[]
+  machineCoding: MachineCodingStatus
 }
 
 export const STORAGE_VERSION = 1
 
-export const createDefaultState = (): PersistedState => ({ version: STORAGE_VERSION, questions: [] })
+export const DEFAULT_MACHINE_CODING: MachineCodingStatus = 'Not Started'
+
+export const createDefaultState = (): PersistedState => ({
+  version: STORAGE_VERSION,
+  questions: [],
+  machineCoding: DEFAULT_MACHINE_CODING,
+})
 
 /**
  * The only thing the rest of the app knows about storage.

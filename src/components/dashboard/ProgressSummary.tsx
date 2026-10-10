@@ -11,7 +11,7 @@ export function ProgressSummary({ stats }: { stats: PracticeStats }) {
   const { total, completed, percentComplete } = stats
 
   return (
-    <section aria-labelledby="progress-heading" className="rounded-panel border border-border bg-surface p-5">
+    <section aria-labelledby="progress-heading" className="h-full rounded-panel border border-border bg-surface p-5">
       <h2 id="progress-heading" className="text-xs font-medium text-muted">
         Overall progress
       </h2>

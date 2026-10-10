@@ -1,6 +1,6 @@
-import { isCategory, isDifficulty, isStatus } from '@/types/guards'
+import { isCategory, isDifficulty, isMachineCodingStatus, isStatus } from '@/types/guards'
 import type { Question } from '@/types/question'
-import { STORAGE_VERSION, type PersistedState } from './repository'
+import { DEFAULT_MACHINE_CODING, STORAGE_VERSION, type PersistedState } from './repository'
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 const isNonEmptyString = (v: unknown): v is string => typeof v === 'string' && v.trim() !== ''
@@ -32,6 +32,7 @@ function migrate(raw: unknown): unknown {
 /**
  * Turn untrusted parsed JSON into PersistedState, or null if it's unusable.
  * Individual malformed questions are dropped; the rest of the data survives.
+ * `machineCoding` is optional on read, so data saved before it existed still loads.
  */
 export function parsePersistedState(raw: unknown): PersistedState | null {
   const data = migrate(raw)
@@ -46,5 +47,6 @@ export function parsePersistedState(raw: unknown): PersistedState | null {
     return true
   })
 
-  return { version: STORAGE_VERSION, questions }
+  const machineCoding = isMachineCodingStatus(data.machineCoding) ? data.machineCoding : DEFAULT_MACHINE_CODING
+  return { version: STORAGE_VERSION, questions, machineCoding }
 }
