@@ -8,7 +8,7 @@ import { StatusSelect } from './StatusSelect'
 /** Mobile list item. Stacked so nothing needs horizontal scrolling. */
 interface QuestionCardProps {
   question: Question
-  onStatusChange: (id: string, status: Status) => void
+  onStatusChange: (question: Question, status: Status) => void
   onDelete: (question: Question) => void
 }
 
@@ -26,7 +26,7 @@ export const QuestionCard = memo(function QuestionCard({ question, onStatusChang
           className="flex-1"
           value={question.status}
           label={`Status of "${question.question}"`}
-          onChange={(status) => onStatusChange(question.id, status)}
+          onChange={(status) => onStatusChange(question, status)}
         />
         <DeleteQuestionButton question={question.question} onClick={() => onDelete(question)} />
       </div>

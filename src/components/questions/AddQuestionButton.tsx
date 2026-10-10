@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
+import { LiveRegion } from '@/components/common/LiveRegion'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
+import { useLiveMessage } from '@/hooks/useLiveMessage'
 import { usePractice } from '@/features/practice/usePractice'
 import type { NewQuestionInput } from '@/types/question'
 import { QuestionForm } from './QuestionForm'
@@ -15,14 +17,17 @@ interface AddQuestionButtonProps {
 export function AddQuestionButton({ label = 'Add question', variant = 'primary' }: AddQuestionButtonProps) {
   const [open, setOpen] = useState(false)
   const { questions, addQuestion } = usePractice()
+  const [message, announce] = useLiveMessage()
 
   function handleSubmit(input: NewQuestionInput) {
     addQuestion(input)
     setOpen(false)
+    announce('Question added')
   }
 
   return (
     <>
+      <LiveRegion message={message} />
       <Button variant={variant} onClick={() => setOpen(true)}>
         <Plus size={16} aria-hidden="true" />
         {label}

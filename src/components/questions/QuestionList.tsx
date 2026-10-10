@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { LiveRegion } from '@/components/common/LiveRegion'
+import { useLiveMessage } from '@/hooks/useLiveMessage'
 import { usePractice } from '@/features/practice/usePractice'
-import type { Question } from '@/types/question'
+import type { Question, Status } from '@/types/question'
 import { QuestionCard } from './QuestionCard'
 import { QuestionRow } from './QuestionRow'
 
@@ -15,13 +17,31 @@ export function QuestionList({ questions }: { questions: Question[] }) {
   const { updateStatus, deleteQuestion } = usePractice()
   const [pendingDelete, setPendingDelete] = useState<Question | null>(null)
 
+  const [message, announce] = useLiveMessage()
+  const regionRef = useRef<HTMLDivElement>(null)
+
+  // Stable identity so memoised rows don't re-render when unrelated rows change.
+  const handleStatusChange = useCallback(
+    (question: Question, status: Status) => {
+      updateStatus(question.id, status)
+      announce(`"${question.question}" marked ${status}`)
+    },
+    [updateStatus, announce],
+  )
+
   function confirmDelete() {
-    if (pendingDelete) deleteQuestion(pendingDelete.id)
+    if (pendingDelete) {
+      deleteQuestion(pendingDelete.id)
+      announce('Question deleted')
+    }
     setPendingDelete(null)
+    // The delete button that opened the dialog is gone, so hand focus to the list instead of dropping it on <body>.
+    requestAnimationFrame(() => regionRef.current?.focus())
   }
 
   return (
-    <>
+    <div ref={regionRef} tabIndex={-1} aria-label="Questions" className="outline-none">
+      <LiveRegion message={message} />
       <div className="hidden overflow-x-auto rounded-panel border border-border bg-surface md:block">
         <table className="w-full table-fixed border-collapse text-sm">
           <caption className="sr-only">Interview questions</caption>
@@ -45,7 +65,7 @@ export function QuestionList({ questions }: { questions: Question[] }) {
           </thead>
           <tbody className="divide-y divide-border">
             {questions.map((q) => (
-              <QuestionRow key={q.id} question={q} onStatusChange={updateStatus} onDelete={setPendingDelete} />
+              <QuestionRow key={q.id} question={q} onStatusChange={handleStatusChange} onDelete={setPendingDelete} />
             ))}
           </tbody>
         </table>
@@ -53,7 +73,7 @@ export function QuestionList({ questions }: { questions: Question[] }) {
 
       <ul className="divide-y divide-border overflow-hidden rounded-panel border border-border bg-surface md:hidden">
         {questions.map((q) => (
-          <QuestionCard key={q.id} question={q} onStatusChange={updateStatus} onDelete={setPendingDelete} />
+          <QuestionCard key={q.id} question={q} onStatusChange={handleStatusChange} onDelete={setPendingDelete} />
         ))}
       </ul>
 
@@ -65,6 +85,6 @@ export function QuestionList({ questions }: { questions: Question[] }) {
         onConfirm={confirmDelete}
         onCancel={() => setPendingDelete(null)}
       />
-    </>
+    </div>
   )
 }

@@ -21,9 +21,9 @@
   --color-muted: #57534e; /* 7.5:1 on canvas - passes AA for body text */
   --color-faint: #78716c;
 
-  /* Accent: primary actions + active nav only */
-  --color-accent: #ea580c;
-  --color-accent-hover: #c2410c;
+  /* Accent: primary actions + active nav only. White text on --color-accent is 5.2:1 (AA). */
+  --color-accent: #c2410c;
+  --color-accent-hover: #9a3412;
   --color-accent-soft: #fff7ed;
 
   /* Semantic: status and difficulty badges only */

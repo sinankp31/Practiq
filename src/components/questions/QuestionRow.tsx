@@ -9,7 +9,7 @@ import { StatusSelect } from './StatusSelect'
 /** Desktop/tablet table row. */
 interface QuestionRowProps {
   question: Question
-  onStatusChange: (id: string, status: Status) => void
+  onStatusChange: (question: Question, status: Status) => void
   onDelete: (question: Question) => void
 }
 
@@ -27,7 +27,7 @@ export const QuestionRow = memo(function QuestionRow({ question, onStatusChange,
         <StatusSelect
           value={question.status}
           label={`Status of "${question.question}"`}
-          onChange={(status) => onStatusChange(question.id, status)}
+          onChange={(status) => onStatusChange(question, status)}
         />
       </td>
       <td className="hidden px-4 py-3 align-middle text-xs text-muted xl:table-cell">
