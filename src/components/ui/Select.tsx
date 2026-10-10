@@ -1,7 +1,7 @@
 import type { SelectHTMLAttributes } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '@/utils/cn'
-import { CONTROL_BASE, controlBorder } from './controlStyles'
+import { CONTROL_BASE, CONTROL_HEIGHT, controlBorder } from './controlStyles'
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   invalid?: boolean
@@ -16,7 +16,7 @@ export function Select({ invalid, className, children, ...props }: SelectProps) 
     <div className="relative">
       <select
         aria-invalid={invalid || undefined}
-        className={cn(CONTROL_BASE, controlBorder(invalid), 'cursor-pointer appearance-none pr-8', className)}
+        className={cn(CONTROL_BASE, CONTROL_HEIGHT, controlBorder(invalid), 'cursor-pointer appearance-none pr-8', className)}
         {...props}
       >
         {children}
