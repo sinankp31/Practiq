@@ -16,7 +16,7 @@ export function AppShell() {
       <MobileHeader />
       {/* pb clears the fixed bottom nav (3.5rem) below lg; pl clears the sidebar at lg+ */}
       <div className="pb-[calc(3.5rem+env(safe-area-inset-bottom))] lg:pb-0 lg:pl-60">
-        <main id="main" className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+        <main id="main" className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
           <Outlet />
         </main>
       </div>
