@@ -3,6 +3,9 @@ import type { NewQuestionInput, Question, Status } from '@/types/question'
 
 export interface PracticeContextValue {
   questions: Question[]
+  isLoading: boolean
+  /** True when the last save failed (storage full or blocked). Data is still usable in memory. */
+  persistenceError: boolean
   addQuestion: (input: NewQuestionInput) => void
   updateStatus: (id: string, status: Status) => void
   deleteQuestion: (id: string) => void

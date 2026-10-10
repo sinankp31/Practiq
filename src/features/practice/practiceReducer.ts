@@ -2,9 +2,12 @@ import type { Question, Status } from '@/types/question'
 
 export interface PracticeState {
   questions: Question[]
+  /** 'loading' until the repository has answered, so the UI never flashes a false empty state. */
+  loadState: 'loading' | 'ready'
 }
 
 export type PracticeAction =
+  | { type: 'hydrate'; questions: Question[] }
   | { type: 'add'; question: Question }
   | { type: 'updateStatus'; id: string; status: Status; updatedAt: string }
   | { type: 'delete'; id: string }
@@ -16,6 +19,9 @@ export type PracticeAction =
  */
 export function practiceReducer(state: PracticeState, action: PracticeAction): PracticeState {
   switch (action.type) {
+    case 'hydrate':
+      return { questions: action.questions, loadState: 'ready' }
+
     case 'add':
       return { ...state, questions: [action.question, ...state.questions] }
 

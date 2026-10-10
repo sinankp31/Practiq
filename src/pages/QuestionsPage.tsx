@@ -3,6 +3,7 @@ import { EmptyTracker } from '@/components/questions/EmptyTracker'
 import { NoResults } from '@/components/questions/NoResults'
 import { AddQuestionButton } from '@/components/questions/AddQuestionButton'
 import { QuestionList } from '@/components/questions/QuestionList'
+import { QuestionListSkeleton } from '@/components/questions/QuestionListSkeleton'
 import { QuestionToolbar } from '@/components/questions/QuestionToolbar'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { usePractice } from '@/features/practice/usePractice'
@@ -10,7 +11,7 @@ import { DEFAULT_FILTERS, filterQuestions } from '@/features/questions/filterQue
 import type { QuestionFilters } from '@/types/question'
 
 export default function QuestionsPage() {
-  const { questions } = usePractice()
+  const { questions, isLoading } = usePractice()
   // Filters are UI state: they live here, not in global state.
   const [filters, setFilters] = useState<QuestionFilters>(DEFAULT_FILTERS)
   const visible = useMemo(() => filterQuestions(questions, filters), [questions, filters])
@@ -22,9 +23,11 @@ export default function QuestionsPage() {
       <PageHeader
         title="Questions"
         description="Track, filter and practice your interview questions."
-        action={questions.length > 0 ? <AddQuestionButton /> : undefined}
+        action={!isLoading && questions.length > 0 ? <AddQuestionButton /> : undefined}
       />
-      {questions.length === 0 ? (
+      {isLoading ? (
+        <QuestionListSkeleton />
+      ) : questions.length === 0 ? (
         <EmptyTracker />
       ) : (
         <>
