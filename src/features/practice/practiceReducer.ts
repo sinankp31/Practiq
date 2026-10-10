@@ -1,0 +1,36 @@
+import type { Question, Status } from '@/types/question'
+
+export interface PracticeState {
+  questions: Question[]
+}
+
+export type PracticeAction =
+  | { type: 'add'; question: Question }
+  | { type: 'updateStatus'; id: string; status: Status; updatedAt: string }
+  | { type: 'delete'; id: string }
+
+/**
+ * Pure reducer: no ids, dates or storage in here. Anything non-deterministic
+ * is created by the caller and passed in the action, which keeps this trivially testable.
+ */
+export function practiceReducer(state: PracticeState, action: PracticeAction): PracticeState {
+  switch (action.type) {
+    case 'add':
+      return { ...state, questions: [action.question, ...state.questions] }
+
+    case 'updateStatus': {
+      const target = state.questions.find((q) => q.id === action.id)
+      // Unknown id or no-op change: return the same state so React skips the re-render.
+      if (!target || target.status === action.status) return state
+      return {
+        ...state,
+        questions: state.questions.map((q) =>
+          q.id === action.id ? { ...q, status: action.status, updatedAt: action.updatedAt } : q,
+        ),
+      }
+    }
+
+    case 'delete':
+      return { ...state, questions: state.questions.filter((q) => q.id !== action.id) }
+  }
+}
