@@ -14,7 +14,7 @@ interface AddQuestionButtonProps {
 /** Self-contained: the button owns its modal, so any page can drop it in. */
 export function AddQuestionButton({ label = 'Add question', variant = 'primary' }: AddQuestionButtonProps) {
   const [open, setOpen] = useState(false)
-  const { addQuestion } = usePractice()
+  const { questions, addQuestion } = usePractice()
 
   function handleSubmit(input: NewQuestionInput) {
     addQuestion(input)
@@ -33,7 +33,7 @@ export function AddQuestionButton({ label = 'Add question', variant = 'primary' 
         title="Add question"
         description="Add something to practise. You can change its status any time."
       >
-        <QuestionForm onSubmit={handleSubmit} onCancel={() => setOpen(false)} />
+        <QuestionForm existing={questions} onSubmit={handleSubmit} onCancel={() => setOpen(false)} />
       </Modal>
     </>
   )
