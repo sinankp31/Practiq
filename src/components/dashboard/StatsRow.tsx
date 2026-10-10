@@ -7,13 +7,15 @@ interface StatProps {
 }
 
 function Stat({ label, value, detail }: StatProps) {
+  // Mobile: label + detail on the left, number on the right (compact rows).
+  // sm+: a plain stacked column inside the strip.
   return (
-    <div className="px-4 py-4 sm:px-5">
+    <div className="grid grid-cols-[1fr_auto] items-center gap-x-4 px-4 py-3 sm:block sm:px-5 sm:py-4">
       <dt className="text-xs font-medium text-muted">{label}</dt>
-      <dd className="mt-1">
-        <span className="text-2xl font-semibold tracking-tight tabular-nums">{value}</span>
-        <span className="mt-0.5 block text-2xs text-muted">{detail}</span>
+      <dd className="col-start-2 row-span-2 row-start-1 text-2xl font-semibold tracking-tight tabular-nums sm:mt-1 sm:block">
+        {value}
       </dd>
+      <dd className="text-2xs text-muted sm:mt-0.5">{detail}</dd>
     </div>
   )
 }
