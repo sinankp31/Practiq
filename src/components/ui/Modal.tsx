@@ -46,7 +46,7 @@ export function Modal({ open, onClose, title, description, children }: ModalProp
                 {title}
               </h2>
               {description && (
-                <p id={descId} className="mt-1 text-xs text-muted">
+                <p id={descId} className="mt-1 text-xs text-muted [overflow-wrap:anywhere]">
                   {description}
                 </p>
               )}

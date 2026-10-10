@@ -16,7 +16,7 @@ interface QuestionRowProps {
 export const QuestionRow = memo(function QuestionRow({ question, onStatusChange, onDelete }: QuestionRowProps) {
   return (
     <tr className="transition-colors hover:bg-subtle/60">
-      <td className="px-4 py-3 align-middle font-medium">{question.question}</td>
+      <td className="px-4 py-3 align-middle font-medium [overflow-wrap:anywhere]">{question.question}</td>
       <td className="px-4 py-3 align-middle">
         <CategoryTag category={question.category} />
       </td>

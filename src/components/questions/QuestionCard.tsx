@@ -15,7 +15,7 @@ interface QuestionCardProps {
 export const QuestionCard = memo(function QuestionCard({ question, onStatusChange, onDelete }: QuestionCardProps) {
   return (
     <li className="space-y-3 p-4">
-      <p className="font-medium leading-snug">{question.question}</p>
+      <p className="font-medium leading-snug [overflow-wrap:anywhere]">{question.question}</p>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <CategoryTag category={question.category} />
         <DifficultyBadge difficulty={question.difficulty} />
