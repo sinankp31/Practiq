@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { ProgressSummary } from '@/components/dashboard/ProgressSummary'
 import { StatsRow } from '@/components/dashboard/StatsRow'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { AddQuestionButton } from '@/components/questions/AddQuestionButton'
@@ -17,7 +18,17 @@ export default function DashboardPage() {
         description="Your interview preparation at a glance."
         action={<AddQuestionButton />}
       />
-      <div className="space-y-4">{isLoading ? <Skeleton className="h-24 w-full" /> : <StatsRow stats={stats} />}</div>
+      {isLoading ? (
+        <div className="space-y-4">
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-36 w-full" />
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <StatsRow stats={stats} />
+          <ProgressSummary stats={stats} />
+        </div>
+      )}
     </>
   )
 }
