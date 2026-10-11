@@ -20,7 +20,7 @@ export function SearchInput({ value, onChange, placeholder, className }: SearchI
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label={placeholder}
-        className={cn(CONTROL_BASE, CONTROL_HEIGHT, 'border-border-strong pl-9 pr-9 [&::-webkit-search-cancel-button]:hidden')}
+        className={cn(CONTROL_BASE, CONTROL_HEIGHT, 'border-border-strong pl-9 pr-9 text-ellipsis [&::-webkit-search-cancel-button]:hidden')}
       />
       {value && (
         <button
