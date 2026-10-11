@@ -42,7 +42,7 @@ There is no state-management library: React Context + `useReducer` is enough for
 
 ## Setup
 
-Requires Node 20 or newer.
+Requires Node 20.19+ or 22.12+ (a Vite requirement).
 
 ```bash
 npm install
