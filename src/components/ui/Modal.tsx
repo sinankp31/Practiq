@@ -13,6 +13,7 @@ interface ModalProps {
  * Built on the native <dialog>. showModal() gives us, for free:
  * focus trapping, Escape to close, an inert page behind, and focus
  * restoration to the opener. Children only mount while open, so forms reset.
+ * Mark the element that should receive initial focus with `data-autofocus`.
  */
 export function Modal({ open, onClose, title, description, children }: ModalProps) {
   const ref = useRef<HTMLDialogElement>(null)
@@ -22,7 +23,12 @@ export function Modal({ open, onClose, title, description, children }: ModalProp
   useEffect(() => {
     const dialog = ref.current
     if (!dialog) return
-    if (open && !dialog.open) dialog.showModal()
+    if (open && !dialog.open) {
+      dialog.showModal()
+      // showModal() focuses the first focusable element (the close button) and overrides React's
+      // autoFocus, so honour an explicit [data-autofocus] target ourselves.
+      dialog.querySelector<HTMLElement>('[data-autofocus]')?.focus()
+    }
     if (!open && dialog.open) dialog.close()
   }, [open])
 

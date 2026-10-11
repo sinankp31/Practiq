@@ -14,7 +14,7 @@ export function ConfirmDialog({ open, title, description, confirmLabel, onConfir
   return (
     <Modal open={open} onClose={onCancel} title={title} description={description}>
       <div className="flex justify-end gap-2">
-        <Button onClick={onCancel} autoFocus>
+        <Button onClick={onCancel} data-autofocus>
           Cancel
         </Button>
         <Button variant="danger" onClick={onConfirm}>

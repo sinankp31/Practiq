@@ -52,7 +52,7 @@ export function QuestionForm({ existing, onSubmit, onCancel }: QuestionFormProps
           invalid={!!errors.question}
           aria-describedby={describedBy(id('question'), true)}
           placeholder="e.g. Explain how a hash map handles collisions"
-          autoFocus
+          data-autofocus
         />
       </FormField>
 
