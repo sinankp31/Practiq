@@ -31,7 +31,7 @@ export function MachineCodingCard({ value, onChange }: MachineCodingCardProps) {
               onChange={() => onChange(status)}
               className="peer sr-only"
             />
-            <span className="flex h-11 cursor-pointer items-center justify-center rounded-control border border-border-strong text-xs font-medium text-muted transition-colors hover:border-faint hover:text-ink peer-checked:border-ink peer-checked:bg-ink peer-checked:text-canvas peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent md:h-9">
+            <span className="flex h-11 cursor-pointer items-center justify-center rounded-control border border-border-strong text-xs font-medium text-muted transition-colors [input:not(:checked)+&]:hover:border-faint [input:not(:checked)+&]:hover:text-ink peer-checked:border-ink peer-checked:bg-ink peer-checked:text-canvas peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent md:h-9">
               {status}
             </span>
           </label>
